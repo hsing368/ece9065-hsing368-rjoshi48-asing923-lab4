@@ -1,0 +1,1 @@
+//Contains all the routes for admin entity
