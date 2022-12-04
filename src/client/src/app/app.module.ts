@@ -1,5 +1,6 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -34,7 +35,8 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
     SignUpComponent,
     LandingComponent,
     ForgotPasswordComponent,
-    VerifyEmailComponent
+    VerifyEmailComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -47,6 +49,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
     MatInputModule,
     MatMenuModule,
     ReactiveFormsModule,
+    HttpClientModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideStorage(() => getStorage()),

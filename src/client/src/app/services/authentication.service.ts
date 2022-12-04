@@ -1,13 +1,16 @@
 import { User } from './user.model';
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Auth,authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile,
           GoogleAuthProvider, 
           signInWithPopup,
           sendPasswordResetEmail,
-          sendEmailVerification
+          sendEmailVerification,
+          user
           } 
         from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
+
 
 //import { getAuth, sendEmailVerification } from "firebase/auth";
 
@@ -23,8 +26,12 @@ export class AuthenticationService {
 
   currentUser$=authState(this.auth);
    user1 = this.auth.currentUser;   
+   readonly registerUrl;
+   rootURL = '/api/open/user/signup/';
    
-  constructor(private auth: Auth) { }
+  constructor(private auth: Auth, private http: HttpClient) { 
+    this.registerUrl = 'http://localhost:8000/api/open/user/signup/'
+   }
 
  async login(username: any, password: any){
     //return from(signInWithEmailAndPassword(this.auth, username, password));
@@ -50,9 +57,10 @@ export class AuthenticationService {
 
   }
 
-  googleSignIn(){
+  async googleSignIn(){
     const provider = new GoogleAuthProvider();
-    return from(signInWithPopup(this.auth, provider))
+   // return from(signInWithPopup(this.auth, provider))
+   return await signInWithPopup(this.auth, provider);
   }
 
   forgotPassword(email: any){
@@ -71,7 +79,6 @@ export class AuthenticationService {
 
   isLoggedIn() {
     var user = this.auth.currentUser;
-    console.log(user);
     if (user?.emailVerified === true) {
       return true;
     }
@@ -79,5 +86,13 @@ export class AuthenticationService {
       return false;
     }
   }
+
+  saveUserInfo(userData: any){
+  console.log("Inside UserData");
+  console.log(userData);
+  const userResponse =  this.http.post<any>(`${this.registerUrl}`,userData);
+  console.log(userResponse);
+  return userResponse ;
+}
 
 }
