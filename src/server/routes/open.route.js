@@ -6,13 +6,16 @@ const router = express.Router();
 const user_controller = require('../controllers/user.controller');
 const song_controller = require('../controllers/song.controller');
 const review_controller = require('../controllers/review.controller');
-
-console.log("Inside open js");
+const playlist_controller = require('../controllers/playlist.controller');
 
 
 router.post('/user/signup', user_controller.create_user);
 
 
 router.get('/song/search/:search_key', song_controller.search_songs);
+
+router.get('/song/all', song_controller.song_all);
+
+router.post('/playlist', playlist_controller.createPlaylist); //crete playlist
 
 module.exports = router;

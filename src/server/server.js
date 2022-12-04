@@ -1,12 +1,20 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const passport = require('passport');
 
 const open = require('./routes/open.route');
 const admin = require('./routes/admin.route');
 const secure = require('./routes/secure.route');
 
+const env_path = process.cwd()+'\\config\\env-config.env';
+require('dotenv').config({path : env_path}); 
+const serverUtils = require('./serverUtils.js');
+
 const app = express();
+app.use(cors());
 
 console.log("Inside server js");
 
@@ -29,9 +37,10 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/open', open);
 

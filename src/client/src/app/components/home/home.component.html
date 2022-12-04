@@ -1,1 +1,67 @@
-<p>home works!</p>
+<div class="main-div">
+
+    <div class="app-sidebar">
+        <div class="app-logo">
+            <!-- <div class="logo-container">
+               <img src="././assets/logo3.png" alt="Logo">
+            </div> -->
+            
+            <div class="logo-text-container">
+                <span class="welcome-container">Welcome here.</span>
+                <span class="welcome-container-name">{{loggedInUser}}! ☺︎</span>
+                <span *ngIf="!loggedIn" (click)="loginHandler('login')" class="click-to-login">Click here to login</span>
+            </div>
+              
+        </div>
+        <div class="line-container">
+            <mat-divider class="divider"></mat-divider>
+        </div>
+        
+        <div class="app-description" (click)="fetchAllTracks()">
+            Explore the tracks
+        </div>
+    
+        <div class="app-description" (click)="playlistHandler()">
+            Create playlist
+        </div>
+    
+        <div class="admins" (click)="fetchAllPlaylists()">
+            View all playlists
+        </div>
+    
+        <div class="about" (click)="modifyPlaylist()">
+            Modify the playlists 
+        </div>
+    </div>
+
+    <div class="music-tracks">
+
+
+        <div class="search-bar-container">
+
+            <form class="form">
+                  
+                <mat-form-field class="search-field" appearance="fill">
+                    <mat-label>Search the playlists</mat-label>
+        
+        
+                    <input matInput type="text" [(ngModel)]="searchInput" (keyup)="searchObjects($event)" aria-label="Number"
+                        matInput [formControl]="myControl" 
+        
+                        >
+                    <button matSuffix (click)="globalSearch(searchInput, $event)" mat-icon-button><mat-icon>search</mat-icon></button>    
+                    <button *ngIf="searchInput" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearch(searchInput, $event)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+

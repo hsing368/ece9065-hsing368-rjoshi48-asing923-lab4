@@ -1,13 +1,8 @@
 const express = require('express');
-const fs = require('fs');
+var fs = require("fs");
+var tracks = JSON.parse(fs.readFileSync("./data/" + "raw_tracks.json", 'utf8'));
 
-const app = express();
 
-
-let raw_tracks = fs.readFileSync('data/raw_tracks.json');
-var tracks = JSON.parse(raw_tracks);
-
-app.use(express.json());
 
 exports.search_songs = function (req, resp){
     var input = req.params.search_key.toString();
@@ -38,4 +33,13 @@ exports.search_songs = function (req, resp){
         else{
             resp.send(musicinfo);
         }
-}
+};
+
+//to fetch all tracks
+exports.song_all = function (req, res, next) {
+        try {
+            res.status(200).send(tracks);
+        } catch (err) {
+            res.status(500).send('Error fetching matching track details!')
+        }
+};
