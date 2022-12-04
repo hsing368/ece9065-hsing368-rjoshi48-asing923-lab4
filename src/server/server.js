@@ -5,31 +5,37 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
 
-
 const open = require('./routes/open.route');
-const env_path=process.cwd()+'\\config\\env-config.env';
+const admin = require('./routes/admin.route');
+const secure = require('./routes/secure.route');
+
+const env_path = process.cwd()+'\\config\\env-config.env';
 require('dotenv').config({path : env_path}); 
 const serverUtils = require('./serverUtils.js');
 
 const app = express();
 app.use(cors());
 
+console.log("Inside server js");
+
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    next();
+  });
+
 // Set up mongoose connection
-mongoose.connect('mongodb://localhost/' + serverUtils.DATABASE_NAME, { useNewUrlParser: true })
+let dev_db_url = 'mongodb://localhost:27017/musiclibrary';
+const mongoDB =  dev_db_url;
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+console.log(mongoDB);
+//mongoose.connect(mongoDB).catch(error => logger(`Error in DB Connection ${error}`));
+//mongoose.connection.on('error', error => logger(`Error in DB Connection ${error}`));
+//mongoose.Promise = global.Promise;
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-const db = mongoose.connection;
-db.on('error', (error) => console.log(error))
-db.once('open', () => console.log('Connected to database'))
-
-app.use(passport.initialize());
-// require('./config/passport-config')(passport);
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-  next();
-});
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -38,4 +44,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/open', open);
 
-app.listen(serverUtils.SERVER_PORT_NUMBER, () => console.log(`Server is listening at PORT ${serverUtils.SERVER_PORT_NUMBER}`));
+
+const port = 8000;
+app.listen(port, () => console.log(`listening on port ${port}`));

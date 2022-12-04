@@ -5,6 +5,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { Auth, sendEmailVerification } from '@angular/fire/auth';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 export function passwordsMatchValidator(): ValidatorFn {
@@ -35,7 +36,10 @@ export class SignUpComponent implements OnInit {
     confirmPassword: new FormControl('', Validators.required)
   },
   {validators: passwordsMatchValidator()}
-  )
+  );
+
+  userData: User = { uid: '', email: '', username: '', role: 'user', isVerified: false, isEnabled: true,
+  password: '', providerId: ''};
 
   constructor(private authService: AuthenticationService, private auth: Auth,
     private router1: RouterModule,private route:ActivatedRoute, private router:Router,
@@ -76,18 +80,35 @@ export class SignUpComponent implements OnInit {
       // });
 
       this.authService.signUp(username, email, password).then(resp =>{
-          alert("user registered")
+        setTimeout(() => {alert("User Registered Successfully");}, 1000);
+          var userData = {
+            "uid": resp.user.uid,
+            "email": resp.user.email,
+            "password": this.signUpForm.value.password,
+            "username": this.signUpForm.value.username,
+            "role": 'user',
+            "isEnabled": true,
+            "isVerified": resp.user.emailVerified,
+            "providerId": resp.user.providerId
+          }
+
+          //save user info in local mongoDB
+          this.authService.saveUserInfo(userData).subscribe((response : any) =>{
+            console.log(response);
+          })
+
           //send verfication email to new user
            this.SendEmailVerification(resp).then((res: any) =>{
-              alert("Registration success. Please verify the email before logging in.")
+              alert("Registration success. Please verify the email before logging in.");
               this.router.navigate(['/verify-email']);
-          })
+             })  
+      }, err => {
+        setTimeout(() => {alert(err.message);}, 1000);
       })
     }
 
     SendEmailVerification(userdata : any){
       return sendEmailVerification(userdata.user);
-
     }
 
 }

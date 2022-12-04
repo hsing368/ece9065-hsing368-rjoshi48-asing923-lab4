@@ -1,5 +1,6 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -36,7 +37,8 @@ import { MatDividerModule } from '@angular/material/divider';
     SignUpComponent,
     LandingComponent,
     ForgotPasswordComponent,
-    VerifyEmailComponent
+    VerifyEmailComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -51,6 +53,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatAutocompleteModule,
     MatMenuModule,
     ReactiveFormsModule,
+    HttpClientModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideStorage(() => getStorage()),

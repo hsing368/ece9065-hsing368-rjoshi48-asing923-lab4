@@ -66,17 +66,45 @@ export class LoginComponent {
   }
 
   signInWithGoogle(){
-    this.authService.googleSignIn().pipe(
-      this.toast.observe({
-        success: 'Logged in successfully',
-        loading: 'Logging in...',
-        error: ({ message }) => `There was an error: ${message} `,
+    // this.authService.googleSignIn().pipe(
+    //   this.toast.observe({
+    //     success: 'Logged in successfully',
+    //     loading: 'Logging in...',
+    //     error: ({ message }) => `There was an error: ${message} `,
+    //   })
+    // )
+    // .subscribe(() => {
+    //   this.router.navigate(['/home']);
+    //   });
+
+
+    this.authService.googleSignIn().then(resp =>{
+      setTimeout(() => {alert("User Logged in Successfully");}, 1000);
+      //alert("User Logged in Successfully");
+      var userData = {
+        "uid": resp.user.uid,
+        "email": resp.user.email,
+        "password": "password",
+        "username": resp.user.displayName,
+        "role": 'user',
+        "isEnabled": true,
+        "isVerified": resp.user.emailVerified,
+        "providerId": resp.user.providerId
+      }
+
+      this.authService.saveUserInfo(userData).subscribe((response : any) =>{
+        console.log(response);
       })
-    )
-    .subscribe(() => {
       this.router.navigate(['/home']);
-      });
+    }, err => {
+      setTimeout(() => {alert(err.message);}, 1000);
+    })
+
   }
 
 }
 
+
+// this.authService.saveUserInfo(userData).then(res1 =>{
+//   console.log(res1);
+// });
