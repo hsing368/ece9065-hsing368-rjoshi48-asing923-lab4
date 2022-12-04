@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const passport = require('passport');
 
 
 const open = require('./routes/open.route');
@@ -19,6 +20,9 @@ mongoose.connect('mongodb://localhost/' + serverUtils.DATABASE_NAME, { useNewUrl
 const db = mongoose.connection;
 db.on('error', (error) => console.log(error))
 db.once('open', () => console.log('Connected to database'))
+
+app.use(passport.initialize());
+// require('./config/passport-config')(passport);
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

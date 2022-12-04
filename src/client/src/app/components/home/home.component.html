@@ -16,24 +16,20 @@
         <div class="line-container">
             <mat-divider class="divider"></mat-divider>
         </div>
-    
-        <div class="admin-login" *ngIf="loggedIn" (click)="logoutHandler('logout')">
-            Logout
-        </div>
         
-        <div class="app-description" (click)="homeHandler('home')">
+        <div class="app-description" (click)="fetchAllTracks()">
             Explore the tracks
         </div>
     
-        <div class="app-description" (click)="homeHandler('home')">
+        <div class="app-description" (click)="playlistHandler()">
             Create playlist
         </div>
     
-        <div class="admins" (click)="adminHandler('about')">
+        <div class="admins" (click)="fetchAllPlaylists()">
             View all playlists
         </div>
     
-        <div class="about" (click)="aboutHandler('about')">
+        <div class="about" (click)="modifyPlaylist()">
             Modify the playlists 
         </div>
     </div>
@@ -44,14 +40,6 @@
         <div class="search-bar-container">
 
             <form class="form">
-                <!-- <mat-form-field class="dropdown-search" appearance="fill">
-                    <mat-label>Search available playlists</mat-label>
-                    <mat-select [(ngModel)]="selectedValue" name="food">
-                      <mat-option *ngFor="let food of foods" [value]="food.value" (click)="dropdownClickHandler(food.value)">
-                        {{food.viewValue}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field> -->
                   
                 <mat-form-field class="search-field" appearance="fill">
                     <mat-label>Search the playlists</mat-label>
@@ -65,12 +53,6 @@
                     <button *ngIf="searchInput" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearch(searchInput, $event)">
                         <mat-icon>close</mat-icon>
                     </button>
-                    <!-- <mat-autocomplete #auto="matAutocomplete" >
-                        <mat-option (click)="globalSearch(option, $event, trigger)" *ngFor="let option of filteredOptions | async"
-                            [value]="option">
-                            {{option}}
-                        </mat-option>
-                    </mat-autocomplete> -->
                 </mat-form-field>
             </form>
         </div>
