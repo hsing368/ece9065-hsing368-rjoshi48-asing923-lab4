@@ -25,6 +25,8 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDividerModule,
+    MatAutocompleteModule,
     MatMenuModule,
     ReactiveFormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
