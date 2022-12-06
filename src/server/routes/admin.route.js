@@ -3,4 +3,4 @@ const express = require('express');
 const router = express.Router();
 const playlist_controller = require('../controllers/playlist.controller');
 
-router.post('/playlist', playlist_controller.create_playlist); //crete playlist
+//router.post('/playlist', playlist_controller.create_playlist); //crete playlist

@@ -45,5 +45,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/open', open);
 
 
-const port = 8000;
+const port = 1000;
 app.listen(port, () => console.log(`listening on port ${port}`));

@@ -1,67 +1,51 @@
-<div class="main-div">
+<div class="material-table">
+    <h3>Search Tracks by Song name, Artist name, Genere or Album</h3>
+    <mat-form-field appearance="outline">
+      <mat-label>Search Tracks by Song name, Artist name, Genere or Album</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Search Tracks" class="input-button-searchsong"/>
+      <mat-icon class='search-icon' color="primary" matSuffix (click)="filterTracks(searchTerm); toggleShowTable()">search</mat-icon>
+    </mat-form-field>
+   
+  </div>
 
-    <div class="app-sidebar">
-        <div class="app-logo">
-            <!-- <div class="logo-container">
-               <img src="././assets/logo3.png" alt="Logo">
-            </div> -->
-            
-            <div class="logo-text-container">
-                <span class="welcome-container">Welcome here.</span>
-                <span class="welcome-container-name">{{loggedInUser}}! ☺︎</span>
-                <span *ngIf="!loggedIn" (click)="loginHandler('login')" class="click-to-login">Click here to login</span>
-            </div>
-              
-        </div>
-        <div class="line-container">
-            <mat-divider class="divider"></mat-divider>
-        </div>
-        
-        <div class="app-description" (click)="fetchAllTracks()">
-            Explore the tracks
-        </div>
-    
-        <div class="app-description" (click)="playlistHandler()">
-            Create playlist
-        </div>
-    
-        <div class="admins" (click)="fetchAllPlaylists()">
-            View all playlists
-        </div>
-    
-        <div class="about" (click)="modifyPlaylist()">
-            Modify the playlists 
-        </div>
-    </div>
+  <table *ngIf="dataSource && showTable" mat-table multiTemplateDataRows [dataSource]="dataSource" class="mat-elevation-z8">
 
-    <div class="music-tracks">
+    <ng-container matColumnDef="Track Name">
+      <th mat-header-cell *matHeaderCellDef color="primary">
+        Track Name
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.track_title }}</td>
+    </ng-container>
 
+    <ng-container matColumnDef="Artist Name">
+      <th mat-header-cell *matHeaderCellDef>Artist Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.album_title }}</td>
+    </ng-container>
 
-        <div class="search-bar-container">
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      class="example-detail-row"
+      [class.example-expanded-row]="row.isExpanded"
+   (click)="row.isExpanded = !row.isExpanded"
+    ></tr>
 
-            <form class="form">
-                  
-                <mat-form-field class="search-field" appearance="fill">
-                    <mat-label>Search the playlists</mat-label>
-        
-        
-                    <input matInput type="text" [(ngModel)]="searchInput" (keyup)="searchObjects($event)" aria-label="Number"
-                        matInput [formControl]="myControl" 
-        
-                        >
-                    <button matSuffix (click)="globalSearch(searchInput, $event)" mat-icon-button><mat-icon>search</mat-icon></button>    
-                    <button *ngIf="searchInput" matSuffix mat-icon-button aria-label="Clear" (click)="resetSearch(searchInput, $event)">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field>
-            </form>
-        </div>
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+          <div class="example-element-detail"
+              [@detailExpand]="element.isExpanded ? 'expanded' : 'collapsed'">
+                  <span class="expanded-contents">
+                      
+                  </span>
+                  <span class="expanded-contents">
+                      {{ element.description }} 
+                      <br>
+                      <br> 
+                      Location: {{ element.location }}
+                  </span>    
+          </div>
+      </td>
+  </ng-container>
 
-
-    </div>
-</div>
-
-
-
-
-
+  </table>

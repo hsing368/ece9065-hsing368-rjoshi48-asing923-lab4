@@ -1,18 +1,39 @@
+import { HttpService } from './../../services/http.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { FormControl } from '@angular/forms';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { animate, state, style, transition, trigger} from '@angular/animations';
+import { MatTableDataSource } from '@angular/material/table';
 
+interface Tracks {
+  track_title: string;
+  album_title: string;
+  artist_name: string;
+  genere: string;
+}
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class HomeComponent implements OnInit {
 
   searchInput: string = '';
   myControl = new FormControl('');
+  searchTerm = '';
+  showTable: boolean = false;
+
+  displayedColumns: string[] = ['Track Name', 'Artist Name'];
+  public dataSource: MatTableDataSource<any> = new MatTableDataSource<Tracks>()
 
   @Output() loginEmitter: EventEmitter<any> = new EventEmitter();
   @Output() home: EventEmitter<any> = new EventEmitter();
@@ -20,10 +41,26 @@ export class HomeComponent implements OnInit {
   loggedInUser: string = 'Guest'
   loggedIn: boolean = false; 
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,private httpService: HttpService) { }
 
   ngOnInit(): void {
   }
+
+  filterTracks(searchTerm: string){
+    this.httpService.fetchTrackDetails(searchTerm.trim()).subscribe((resp: any) =>{
+      if(resp.error){
+        setTimeout(() => {alert(resp.error);}, 1000);
+      } else{
+        console.log(resp);
+        isExpanded: false
+        this.dataSource = new MatTableDataSource(resp);
+      }
+    })
+  }
+
+  toggleShowTable(): void {
+    this.showTable = !this.showTable;
+}
 
   fetchAllTracks(){
 
