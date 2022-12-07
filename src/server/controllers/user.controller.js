@@ -1,6 +1,8 @@
 express = require('express');
 
 // Include modules
+const Token = require('../models/token.model');
+const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const User_db = require('../models/user.model');
 const argon2 = require('argon2');
@@ -55,6 +57,22 @@ exports.create_new_user = function (req, res, next) {
                                 }
                             });
 
+                            // Create the JWT token
+                            var token = new Token({ _userId: curr_user._id, token: require('crypto').randomBytes(16).toString('hex') });
+                            // Token must be saved to verify
+                            token.save(function (error_msg) {
+                                if (error_msg) {
+                                    return next(error_msg);
+                                } else {
+                                    // Send the email to the user
+                                    var mailOptions = { from: 'noreply@musiclibrary-signup.com', to: curr_user.email, subject: 'Verify your email for music library', html: "<b>Hello </b></br><p>Follow this link to verify your email address. <a href='http://" + req.headers.host + "/api/open/user/verify/" + token.token + "'>Link to verify</a> </p>" };
+                                    transporter.sendMail(mailOptions, function (error_msg) {
+                                        if (error_msg) { return res.status(500).send({ msg: error_msg.message }); }
+                                        console.log("Email has been sent to the user to verify now");
+                                        res.status(200).send(curr_user);
+                                    });
+                                }
+                            });
                         }
                     });
                 });
@@ -94,7 +112,21 @@ exports.verify_again = function (req, res, next) {
             }
         });
 
-
+        // Create the JWT token
+        var token = new Token({ _userId: curr_user._id, token: require('crypto').randomBytes(16).toString('hex') });
+        // Token must be saved to verify
+        token.save(function (error_msg) {
+            if (error_msg) {
+                return next(error_msg);
+            } else {
+                var mailOptions = { from: 'noreply@musiclibrary-signup.com', to: curr_user.email, subject: 'Re-Verify your email for music library', html: "<b>Hello </b></br><p>Follow this link to verify your email address. <a href='http://" + req.headers.host + "/api/open/user/verify/" + token.token + "'>Link to re-verify</a> </p>" };
+                transporter.sendMail(mailOptions, function (error_msg) {
+                    if (error_msg) { return res.status(500).send({ msg: error_msg.message }); }
+                    console.log("Email has been sent to the user to verify now");
+                    res.status(200).send(curr_user);
+                });
+            }
+        });
 
     });
 };
@@ -215,7 +247,21 @@ exports.user_google_auth = function (req, res, next) {
                             role: currUser.role,
                             active: currUser.isVerified
                         };
-
+                        jwt.sign(token_payload, secret, { expiresIn: 36000 },
+                            (error_msg, newToken) => {
+                                console.log('->->->->->->->->->->', secret)
+                                console.log('Generated token--->',token_payload )
+                                if (error_msg) res.status(500)
+                                    .json({
+                                        error: "Token signing failed",
+                                        raw: error_msg
+                                    });
+                                res.status(200).send({
+                                    success: true,
+                                    token: `Bearer ${newToken}`,
+                                    user: { user_id: currUser._id, username: currUser.username, email: currUser.email, role: currUser.role, isVerified: currUser.isVerified }
+                                });
+                            });
                     }
                 });
             }
@@ -228,7 +274,21 @@ exports.user_google_auth = function (req, res, next) {
                     role: currUser.role,
                     active: currUser.isVerified
                 };
-
+                jwt.sign(token_payload, secret, { expiresIn: 36000 },
+                    (error_msg, newToken) => {
+                        console.log('->->->->->->->->->->', secret)
+                        console.log('Generated token--->',token_payload )
+                        if (error_msg) res.status(500)
+                            .json({
+                                error: "Token signing failed",
+                                raw: error_msg
+                            });
+                        res.status(200).send({
+                            success: true,
+                            token: `Bearer ${newToken}`,
+                            user: { user_id: currUser._id, username: currUser.username, email: currUser.email, role: currUser.role, isVerified: currUser.isVerified }
+                        });
+                    });
             }
         }
     });
@@ -264,7 +324,21 @@ exports.user_auth = function (req, res, next) {
                             role: currUser.role,
                             active: currUser.isVerified
                         };
-
+                        jwt.sign(token_payload, secret, { expiresIn: 36000 },
+                            (error_msg, newToken) => {
+                                console.log('->->->->->->->->->->', secret)
+                                console.log('Generated token--->',token_payload )
+                                if (error_msg) res.status(500)
+                                    .send({
+                                        error: "Token signing failed",
+                                        raw: error_msg
+                                    });
+                                res.json({
+                                    success: true,
+                                    token: `Bearer ${newToken}`,
+                                    user: { user_id: currUser._id, username: currUser.username, email: currUser.email, role: currUser.role, isVerified: currUser.isVerified }
+                                });
+                            });
                         res.status(200).send({ newToken });
                     }
                     else { res.status(400).send({ type: 'auth-failed', msg: 'Password does not match. Please try again' }); }
