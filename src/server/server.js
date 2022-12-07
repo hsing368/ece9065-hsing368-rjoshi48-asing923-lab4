@@ -1,9 +1,11 @@
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
-const cors = require('cors');
+
+
 const passport = require('passport');
+const mongoose = require('mongoose');
 
 const open = require('./routes/open.route');
 const admin = require('./routes/admin.route');
@@ -36,6 +38,18 @@ console.log(mongoDB);
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+manageAccess = (requestedAuthLevel) => {
+  return (req, res, next) => {
+         if(req.user.role === requestedAuthLevel || req.user.role === 'admin')
+          {
+              return next();
+          }
+          else
+          {
+              return res.status(403).send('Unauthorized User!! Please refrain from acessing');
+          }
+  };
+};
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -47,3 +61,4 @@ app.use('/api/open', open);
 
 const port = 1000;
 app.listen(port, () => console.log(`listening on port ${port}`));
+
