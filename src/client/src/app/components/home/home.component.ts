@@ -6,7 +6,7 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { animate, state, style, transition, trigger} from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
 
-interface Tracks {
+export interface Tracks {
   track_title: string;
   album_title: string;
   artist_name: string;
@@ -32,8 +32,16 @@ export class HomeComponent implements OnInit {
   searchTerm = '';
   showTable: boolean = false;
 
+  toggleRow(element: { expanded: boolean; }) {
+    element.expanded = !element.expanded
+  }
+
   displayedColumns: string[] = ['Track Name', 'Artist Name'];
-  public dataSource: MatTableDataSource<any> = new MatTableDataSource<Tracks>()
+  public dataSource: MatTableDataSource<any> = new MatTableDataSource<Tracks>();
+  columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
+  elementsDisplayed: string[] = ['track_title', 'artist_name'];
+
+  expandedElement: Tracks | null | undefined;
 
   @Output() loginEmitter: EventEmitter<any> = new EventEmitter();
   @Output() home: EventEmitter<any> = new EventEmitter();
