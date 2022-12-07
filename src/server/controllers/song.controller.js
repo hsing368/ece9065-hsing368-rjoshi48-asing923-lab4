@@ -4,7 +4,7 @@ var tracks = JSON.parse(fs.readFileSync("./data/" + "raw_tracks.json", 'utf8'));
 const SongDB = require('../models/song.model');
 
 // Create a new song based on data passed in the body
-exports.song_create = function (req, res, next) {
+exports.add_new_song = function (req, res, next) {
     // Create song object
     let curr_song = new SongDB(
         {
@@ -100,4 +100,76 @@ exports.get_songs_by_id = function (req, res, next) {
                 if (error_msg) return next(error_msg);
                  res.send(item);
             });
+};
+
+// Detail the list of songs by id
+exports.song_delete_by_id = function (req, res, next) {
+    SongDB.findByIdAndDelete(req.body.id, function (error_msg, curr_song) {
+        if (error_msg) return next(error_msg);
+        res.send(curr_song);
+    });
+
+};
+
+// Detail the song by id
+exports.delete_entire_song_info = function (req, res, next) {  
+    SongDB.findByIdAndDelete(req.params.id, function (error_msg, curr_song) {
+        if (error_msg) return next(error_msg);
+        
+        review_controller.deleteReviews(req, res, next, req.params.id);
+        res.status(200).send({msg:'Entire current song info cleared from database'});
+    });
+
+};
+
+// Modify the list of songs by id
+exports.modify_current_song = function (req, res, next) {
+    SongDB.findById(req.body._id, function (error_msg, curr_song) {
+        if (error_msg) { 
+            return next(error_msg); 
+        }
+        if (req.body.Genre != undefined) { 
+            console.log("Genre is set");
+            curr_song.Genre = req.body.Genre;
+        }
+        if (req.body.Hidden != undefined) { 
+            console.log("Song is set");
+            curr_song.Hidden = req.body.Hidden; 
+        }
+        if (req.body.Year != undefined) { 
+            console.log("Year of Song is set");
+            curr_song.Year = req.body.Year; 
+        }
+        if (req.body.Length != undefined) { 
+            console.log("Length of Song is set");
+            curr_song.Length = req.body.Length; 
+        }
+        if (req.body.Album != undefined) { 
+            console.log("Album of Song is set");
+            curr_song.Album = req.body.Album; 
+        }
+        if (req.body.Track != undefined) { 
+            console.log("Track of song is set");
+            curr_song.Track = req.body.Track; 
+        }
+
+        if (req.body.Title != undefined) { 
+            console.log("Title of song is set");
+            curr_song.Title = req.body.Title; 
+        }
+        if (req.body.Artist != undefined) { 
+            console.log("Artist of song is set");
+            curr_song.Artist = req.body.Artist; 
+        }
+
+        curr_song.save(function (error_msg, curr_song) {
+            if (error_msg) {
+                console.log("Error in saving of song");
+                return next(error_msg);
+            }
+            console.log("Saving of song complete");
+            res.status(200).send(curr_song);
+        }
+        );
+    });
 };
