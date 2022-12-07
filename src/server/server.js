@@ -24,9 +24,9 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', '*');
     next();
   });
-
+  //mongodb://127.0.0.1:27017/
 // Set up mongoose connection
-let dev_db_url = 'mongodb://localhost:27017/musiclibrary';
+let dev_db_url = 'mongodb://127.0.0.1:27017/musiclibrary';
 const mongoDB =  dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 console.log(mongoDB);
