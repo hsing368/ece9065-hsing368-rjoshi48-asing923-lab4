@@ -60,3 +60,11 @@ exports.songCreate = function (req, res, next) {
     );
 
 };
+
+// controller to retrieve user playlists
+exports.validatedUserPlaylist = function (req, res, next) {
+    Playlist.find({ user_id: req.params.userId }).select('-songs').exec(function (error, customPlaylist) {
+        if (error) return next(error);
+        res.send(customPlaylist);
+    });
+};
