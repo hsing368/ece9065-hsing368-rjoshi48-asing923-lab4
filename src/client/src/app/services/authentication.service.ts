@@ -30,7 +30,7 @@ export class AuthenticationService {
    rootURL = '/api/open/user/signup/';
    
   constructor(private auth: Auth, private http: HttpClient) { 
-    this.registerUrl = 'http://localhost:8000/api/open/user/signup/'
+    this.registerUrl = 'http://localhost:1000/api/open/user/signup/'
    }
 
  async login(username: any, password: any){
