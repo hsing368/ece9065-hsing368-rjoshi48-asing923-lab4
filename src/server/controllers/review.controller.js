@@ -1,4 +1,3 @@
-<<<<<<< asing923
 //Contains the actual implementation of REST APIs related to 'review' functionality
 
 const ReviewModel = require('../models/review.model');
@@ -66,7 +65,7 @@ function createRevFunc(req, res, next, song) {
         }
     });
 }
-=======
+
 //Contains the actual implementation of REST APIs related to 'review' functionalityconst Playlist = require('../models/playlist.model');
 const Review = require('../models/review.model');
 const Playlist = require('../models/playlist.model');
@@ -99,4 +98,3 @@ exports.createReview = async function (req, res, next) {
             res.status('Internal server error while checking if list exists!')
         })
 };
->>>>>>> main
