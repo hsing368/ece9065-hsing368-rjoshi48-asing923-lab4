@@ -57,7 +57,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/open', open);
-
+app.use('/api/secure',[passport.authenticate('jwt', {session: false}),validateRouteAccess.permissonLevel('user')], secure);
 
 const port = 1000;
 app.listen(port, () => console.log(`listening on port ${port}`));
