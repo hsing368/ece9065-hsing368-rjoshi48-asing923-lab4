@@ -1,5 +1,6 @@
 //Contains the actual implementation of REST APIs related to 'playlist' functionality
 const Playlist = require('../models/playlist.model');
+const Song = require('../models/song.model');
 
 exports.createPlaylist = async function (req, res, next) {
     console.log(req.body);
@@ -28,4 +29,34 @@ exports.createPlaylist = async function (req, res, next) {
         .catch(err => {
             res.status('Internal server error while checking if list exists!')
         })
+};
+
+
+exports.songCreate = function (req, res, next) {
+    let userSong = new Song(
+        {
+            SongTitle: req.body.Title,
+            ArtistName: req.body.Artist,
+            AlbumName: req.body.Album,
+            TrackName: req.body.Track,
+            YearOfAlbum: req.body.Year,
+            TrackLength: req.body.Length,
+            GenreName: req.body.Genre,
+            ReviewsGiven: [],
+            Hidden: req.body.Hidden
+        }
+    );
+  
+    userSong.save(function (error, userSong) {
+        if (error) {
+            return next(error);
+        }
+        if (req.body.desc != undefined) {
+            review_controller.addReview(req, res, next, userSong._id);
+        }
+        res.status(200).send(userSong);
+
+    }
+    );
+
 };
