@@ -8,3 +8,4 @@ const review_controller = require('../controllers/review.controller');
 const song_controller = require('../controllers/song.controller');
 
 router.post('/song', song_controller.song_create);
+router.post('/userReviews', review_controller.review); //Add review fucntionality
