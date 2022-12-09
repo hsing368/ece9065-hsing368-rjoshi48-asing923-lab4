@@ -138,3 +138,41 @@ exports.searchPlaylist = function (req, res, next) {
             }
         });
 };
+
+
+exports.modification = function (req, res, next) {
+    Playlist.findById(req.body.playlistID, function (error, customPlaylist) {
+        if (error) {
+            return next(error);
+        } else {
+            if (customPlaylist != undefined) {
+                if (req.body.playlistName != undefined) { customPlaylist.playlistName = req.body.playlistName; }
+                if (req.body.playlistAbout != undefined) { customPlaylist.playlist_desc = req.body.playlistabout; }
+                if (req.body.scope != undefined) { customPlaylist.visiblity = req.body.scope; }
+                if (req.body.featureScope != undefined) {
+                    if (req.body.featureScope == 'addition' && req.body.trackId != undefined) { customPlaylist.songs.push(req.body.trackId); }
+                    else if (req.body.featureScope == 'deletion' && req.body.trackId != undefined) { placustomPlaylistylist.songs.pop(req.body.trackId); }
+                }
+
+                playlistID.save(function (error, customPlaylist) {
+                    if (error) {
+                        return next(error);
+                    } else {
+                        res.status(200).send(customPlaylist);
+                    }
+                });
+            }
+            else {
+                res.status(400).send({msg:'custom p-list doesnt exist! apologies!'});
+            }
+        }
+    });
+};
+
+exports.deletion = function (req, res, next) {
+    Playlist.findByIdAndDelete(req.body.playlistId, function (error, customPlist) {
+        if (error) return next(error);
+        res.send('custom p-list has been deleted successfully');
+    });
+
+};
