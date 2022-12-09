@@ -19,4 +19,7 @@ router.get('/playlist/:id', playlist_controller.playlistDetailsById);
 // Search functionality route
 router.get('/playlist/search/:searchParam', playlist_controller.searchPlaylist); 
 
+// Route to handle playlist creation
+router.post('/customPlaylist', playlist_controller.CustomListAdd); 
+
 

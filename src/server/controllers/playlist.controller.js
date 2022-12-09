@@ -81,6 +81,27 @@ exports.playlistDetailsById = function (req, res, next) {
     });
 };
 
+exports.CustomListAdd = function (req, res, next) {
+    const customMusicPlaylist = new Playlist(
+        {
+            namePlaylist: req.body.namePlaylist,
+            playlistDescription: req.body.playlistDescription,
+            userID: req.body.userID,
+            tracks: [req.body.tracks],
+            scope: req.body.scope
+        }
+    );  
+
+ 
+    customMusicPlaylist.save(function (error, customMusicPlaylist) {
+        if (error) {
+            return next(error);
+        } else {
+            res.status(200).send(customMusicPlaylist);
+        }
+    });
+};
+
 exports.searchPlaylist = function (req, res, next) {   
     Playlist.find(
         { visiblity:{$ne:'private'},
