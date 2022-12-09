@@ -350,8 +350,8 @@ exports.user_auth = function (req, res, next) {
     });
 };
 
-// Get privacy policy
 exports.privacy_policy = function (req, resp){
+    policy = JSON.parse(fs.readFileSync(__dirname + '/data/policy.json','utf-8'));
     console.log("Policy backend");
     var policy_desc= []
 
@@ -375,7 +375,6 @@ exports.privacy_policy = function (req, resp){
 
 };
 
-// edit privacy policy
 exports.edit_privacy_policy = function (req, resp){
 
     var policy_save = [];
