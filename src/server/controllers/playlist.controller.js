@@ -68,3 +68,14 @@ exports.validatedUserPlaylist = function (req, res, next) {
         res.send(customPlaylist);
     });
 };
+
+exports.playlistDetailsById = function (req, res, next) {
+
+    Playlist.findById(req.params.playlistId).select('songs').populate({
+        path: 'songs',
+        populate: { path: 'Reviews', options: { sort: { _id: -1 }, limit: 2 }, populate: { path: 'userId' } }
+    }).exec(function (error, playlistUser) {
+        if (error) return next(error);
+        res.send(playlistUser.songs);
+    });
+};
