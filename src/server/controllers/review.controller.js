@@ -116,5 +116,16 @@ exports.revDeletion = function (req, res, next) {
     });
 };
 
+function allReviewsDeletion(req, res, next, track) {
+    Review.deleteMany({ song_id: track }, function (error, rev) {
+        if (error) {
+            return next(error);
+        } else {
+            console.log('All revs has been deleted');
+        }
+    });
+}
+
 exports.reviewAddition = createRevFunc;
 exports.reviewDeletion = revDeletion;    
+exports.reviewAllDels = allReviewsDeletion;
