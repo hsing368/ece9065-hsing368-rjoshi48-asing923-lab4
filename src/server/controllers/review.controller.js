@@ -66,10 +66,6 @@ function createRevFunc(req, res, next, song) {
     });
 }
 
-//Contains the actual implementation of REST APIs related to 'review' functionalityconst Playlist = require('../models/playlist.model');
-const Review = require('../models/review.model');
-const Playlist = require('../models/playlist.model');
-
 exports.createReview = async function (req, res, next) {
     console.log(req.body);
     await Playlist.findOne({ playlist_title: req.body.playlist_title.toLowerCase().trim() }).then(async playlist => {
@@ -98,3 +94,38 @@ exports.createReview = async function (req, res, next) {
             res.status('Internal server error while checking if list exists!')
         })
 };
+
+exports.revAboutDetails = function (req, res, next) {
+    Song.find(req.params.reviewId, function (error, element) {
+        if (error) return next(error);
+        res.send(element);
+    });
+};
+
+exports.fetchAllReviews = function (req, res, next) {
+    Review.find({ songId: req.params.songId }).populate({  path: 'userId' }).exec(function (error, element) {
+        if (error) return next(error);
+        res.send(element);
+    });
+};
+
+exports.revDeletion = function (req, res, next) {
+    Review.findByIdAndDelete(req.body.reviewId, function (err, reviewId) {
+        if (error) return next(error);
+        res.send('Deletion of review attached to playlist is achieved!');
+    });
+};
+
+function allReviewsDeletion(req, res, next, track) {
+    Review.deleteMany({ song_id: track }, function (error, rev) {
+        if (error) {
+            return next(error);
+        } else {
+            console.log('All revs has been deleted');
+        }
+    });
+}
+
+exports.reviewAddition = createRevFunc;
+exports.reviewDeletion = revDeletion;    
+exports.reviewAllDels = allReviewsDeletion;
