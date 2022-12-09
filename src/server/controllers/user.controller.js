@@ -349,3 +349,50 @@ exports.user_auth = function (req, res, next) {
         }
     });
 };
+
+// Get privacy policy
+exports.privacy_policy = function (req, resp){
+    console.log("Policy backend");
+    var policy_desc= []
+
+    policy.forEach(element =>{
+            policy_desc = element;
+        })
+
+
+
+        if(policy_desc.length<1){
+
+            resp.status(404).send("Record not found");
+
+        }
+
+        else{
+
+            resp.send(policy_desc);
+
+        }
+
+};
+
+// edit privacy policy
+exports.edit_privacy_policy = function (req, resp){
+
+    var policy_save = [];
+    var obj = 
+    {
+        policy : req.body.policy
+    };
+    policy_save.push(obj);
+
+    fs.writeFile(__dirname + '/data/policy.json', JSON.stringify(policy_save), function(err){
+
+        if (err) throw err;
+
+        console.log(`${req.body["policy"]}`);
+
+        resp.send(obj);
+
+    });
+    
+}
