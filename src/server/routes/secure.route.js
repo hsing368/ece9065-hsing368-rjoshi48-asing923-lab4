@@ -12,3 +12,6 @@ router.post('/userReviews', review_controller.review); //Add review fucntionalit
 
 // Route to fetch playlist of validated user
 router.get('/customPlaylist/userval/id', playlist_controller.validatedUserPlaylist); 
+
+// Get  details of the selected playlist by id
+router.get('/playlist/:id', playlist_controller.playlistDetailsById); 
