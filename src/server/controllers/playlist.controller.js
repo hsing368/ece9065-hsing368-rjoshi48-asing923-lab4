@@ -1,6 +1,7 @@
 //Contains the actual implementation of REST APIs related to 'playlist' functionality
 const Playlist = require('../models/playlist.model');
 const Song = require('../models/song.model');
+const Fuse = require('fuse.js');
 
 exports.createPlaylist = async function (req, res, next) {
     console.log(req.body);
@@ -78,4 +79,41 @@ exports.playlistDetailsById = function (req, res, next) {
         if (error) return next(error);
         res.send(playlistUser.songs);
     });
+};
+
+exports.searchPlaylist = function (req, res, next) {   
+    Playlist.find(
+        { visiblity:{$ne:'private'},
+         $text: { $search: req.params.searchParam } },
+        { score: { $meta: "textScore" } }
+    )   
+        .sort({ score: { $meta: 'textScore' } }).select('-songs').exec(function (error, element) {
+
+            if (element.length != 0) {
+                res.send(element);
+            }
+            if (error) return next(err);
+            else {
+                Playlist.find({visiblity:{$ne:'private'}}).exec(function (error, element) {
+                    if (error) { return next(error); }
+                    else {
+                        var features = {
+                            Sorting: true,
+                            thresholdVal: 0.4,
+                            loc: 0,
+                            length: 100,
+                            maxPatDist: 32,
+                            minPatDist: 3,
+                            feats: [
+                                "playlist_title",
+                                "playlist_desc"
+                            ]
+                        };
+                        var fuse = new Fuse(element, features);
+                        element = fuse.search(req.params.searchParam);
+                        res.send(element);
+                    }
+                });
+            }
+        });
 };
