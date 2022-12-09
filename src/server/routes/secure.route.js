@@ -15,3 +15,8 @@ router.get('/customPlaylist/userval/id', playlist_controller.validatedUserPlayli
 
 // Get  details of the selected playlist by id
 router.get('/playlist/:id', playlist_controller.playlistDetailsById); 
+
+// Search functionality route
+router.get('/playlist/search/:searchParam', playlist_controller.searchPlaylist); 
+
+
