@@ -22,4 +22,9 @@ router.get('/playlist/search/:searchParam', playlist_controller.searchPlaylist);
 // Route to handle playlist creation
 router.post('/customPlaylist', playlist_controller.CustomListAdd); 
 
+// Route to handle playlist modification
+router.put('/customPlaylist', playlist_controller.modification);
 
+// Route to handle deleteion of playlist
+router.delete('/customPlaylist', playlist_controller.deletion); 
+module.exports = router;
