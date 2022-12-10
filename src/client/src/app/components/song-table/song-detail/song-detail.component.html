@@ -26,8 +26,10 @@
   All</button>
 
 
-
-
+  <div class="element-description">
+    <a class ="example-element-description" [href]="'https://www.youtube.com/results?search_query=' + songDetails.Title" target="_blank"> 
+      <mat-icon>youtube_searched_for</mat-icon> Search Song on Youtube </a>
+  </div>
 
 <div>
   <ng-container *ngFor="let review of songDetails.Reviews; ">
