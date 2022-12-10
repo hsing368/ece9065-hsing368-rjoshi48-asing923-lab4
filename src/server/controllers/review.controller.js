@@ -1,6 +1,70 @@
-//Contains the actual implementation of REST APIs related to 'review' functionalityconst Playlist = require('../models/playlist.model');
-const Review = require('../models/review.model');
-const Playlist = require('../models/playlist.model');
+//Contains the actual implementation of REST APIs related to 'review' functionality
+
+const ReviewModel = require('../models/review.model');
+const SongModel = require('../models/song.model');
+
+exports.review = function (req, res, next) {
+  
+    createRevFunc(req, res, next, req.body.songId);
+    SongModel.findById(req.body.song_id).populate({ path: 'Reviews', options: { sort: { _id: -1 }, limit: 2 }, populate: { path: 'user_id' } }).exec(function (err, item) {
+        if (err) return next(err);
+        res.status(200).send(item);    
+    });
+       
+
+};
+
+function createRevFunc(req, res, next, song) {
+    let averageRating = 0;
+    const reviewAdded = new ReviewModel(
+        {
+
+            about: req.body.description,
+            ratingAdded: req.body.ratingAdded,
+            userId: req.body.userId,
+            songId: song
+        }
+    );
+    reviewAdded.save(function (error, rev) {
+        if (error) {
+            return next(err);
+        } else {
+            SongModel.findById(song).populate({ path: 'Reviews' }).exec(function (err, song) {
+                if (err) { return next(err); }
+                else if (song.Reviews != undefined) {
+                    let ratingCount = 0;
+                    let k = 0;
+                    if (rev.rating != undefined && rev.rating >= 1 && rev.rating <= 5) {
+                        ratingCount = rev.rating;
+                        k++;
+                    }
+                    song.rev.forEach(element => {
+                        if (element.rating != undefined) {
+                            ratingCount += element.rating;
+                            k++;
+                        }
+                    });
+                    if (ratingCount != 0 && k != 0) {
+                        averageRating = ratingCount / k;
+                    }
+                    SongModel.findById(song, function (error, songFetched) {
+                        if (error) return next(error);
+                        songFetched.Reviews.push(review._id);
+                        songFetched.Rating = Math.round(avgRating);
+                        songFetched.reviewCount=k;
+                        songFetched.save(function (err, songFetched) {
+                            if (error) {
+                                return next(error);
+                            }
+                            console.log('Review has been added to the track');
+                        }
+                        );
+                    });
+                }
+            });
+        }
+    });
+}
 
 exports.createReview = async function (req, res, next) {
     console.log(req.body);
@@ -30,3 +94,38 @@ exports.createReview = async function (req, res, next) {
             res.status('Internal server error while checking if list exists!')
         })
 };
+
+exports.revAboutDetails = function (req, res, next) {
+    Song.find(req.params.reviewId, function (error, element) {
+        if (error) return next(error);
+        res.send(element);
+    });
+};
+
+exports.fetchAllReviews = function (req, res, next) {
+    Review.find({ songId: req.params.songId }).populate({  path: 'userId' }).exec(function (error, element) {
+        if (error) return next(error);
+        res.send(element);
+    });
+};
+
+exports.revDeletion = function (req, res, next) {
+    Review.findByIdAndDelete(req.body.reviewId, function (err, reviewId) {
+        if (error) return next(error);
+        res.send('Deletion of review attached to playlist is achieved!');
+    });
+};
+
+function allReviewsDeletion(req, res, next, track) {
+    Review.deleteMany({ song_id: track }, function (error, rev) {
+        if (error) {
+            return next(error);
+        } else {
+            console.log('All revs has been deleted');
+        }
+    });
+}
+
+exports.reviewAddition = createRevFunc;
+exports.reviewDeletion = revDeletion;    
+exports.reviewAllDels = allReviewsDeletion;
